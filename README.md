@@ -25,6 +25,7 @@ Both screenshots use the app's built-in synthetic records.
 | app/ | Browser app, vintage citation styling, and ArcPy companion script |
 | data/raw/parking-tickets-2024/ | The 12 original monthly CSVs from the City of Toronto |
 | data/prepared/ | Working copies and samples ready to import |
+| samples/ | Attributed City sample included in the repository |
 | exports/ | Save audit exports and issue logs here |
 
 ## Reading the code
@@ -33,6 +34,21 @@ Both screenshots use the app's built-in synthetic records.
 2. Read [app.js](app/app.js) to follow the browser workflow. The demo or an imported CSV supplies records, validation adds audit fields, and the filtered records can be exported as CSV.
 3. Open [style.css](app/style.css) to see how the theme, panels, and smaller-screen layouts are styled.
 4. Read [arcpy_audit.py](app/arcpy_audit.py) for the separate ArcGIS Pro workflow. It checks the input fields, copies the source, audits the copy one row at a time, and writes an issue log.
+
+## Included sample
+
+[Download the 15,800-record sample](samples/toronto-parking-tickets-2024-sample.csv). It contains the first 15,800 rows from the City's January 2024 file. Two headers were renamed for the app. The masked ticket IDs and other source values are preserved.
+
+Source: [City of Toronto Open Data, Parking Tickets](https://open.toronto.ca/dataset/parking-tickets/), January 2024. Contains information licensed under the [Open Government Licence – Toronto](https://open.toronto.ca/open-data-licence/).
+
+To audit the included sample with regular Python, run these commands from the project directory:
+
+~~~powershell
+New-Item -ItemType Directory -Path exports -Force | Out-Null
+python app/csv_audit.py samples/toronto-parking-tickets-2024-sample.csv exports/sample_audited.csv exports/sample_issues.csv
+~~~
+
+For the one-click PyCharm run, copy the included sample to data/prepared/tickets.csv. To use the browser app, import the sample and follow the masked-ID note below.
 
 ## Use the City data
 
@@ -65,4 +81,4 @@ The [ArcPy script](app/arcpy_audit.py) takes a table or feature class, an existi
 
 ## Local files
 
-The repository contains source code and a synthetic browser demo. The City CSVs, prepared data, geodatabases, audit exports, virtual environments, and editor settings stay local. Create the data and exports folders as needed when setting up a fresh clone.
+The repository contains source code and a synthetic browser demo. The attributed CSV under samples/ is the only real ticket dataset included. Full City downloads, other prepared data, geodatabases, audit exports, virtual environments, and editor settings stay local. Create the data and exports folders as needed when setting up a fresh clone.

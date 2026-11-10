@@ -17,3 +17,8 @@
 /docs/screenshots/*
 !/docs/screenshots/validation-dashboard.jpg
 !/docs/screenshots/record-explorer.jpg
+
+# Share only the attributed public sample from this directory.
+!/samples/
+/samples/*
+!/samples/toronto-parking-tickets-2024-sample.csv

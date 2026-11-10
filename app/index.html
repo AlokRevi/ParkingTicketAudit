@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Parking Ticket Audit — GIS Data Quality</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Navigation buttons use data-page to tell app.js which view to show. -->
+    <aside>
+      <a class="brand" href="#"
+        >▧ <span>Parking Ticket <span class="light">Audit</span></span></a
+      >
+      <div class="workspace">GIS DATA QUALITY WORKSPACE</div>
+      <nav>
+        <button class="active" data-page="overview">◫ &nbsp; Overview</button
+        ><button data-page="records">▤ &nbsp; Record explorer</button
+        ><button data-page="rules">☷ &nbsp; Validation rules</button
+        ><button data-page="runs">◷ &nbsp; Processing log</button>
+      </nav>
+      <div class="sidefoot">
+        <span class="dot"></span> Browser workspace<br /><small
+          >Data stays on this device</small
+        >
+      </div>
+    </aside>
+    <main>
+      <header>
+        <span>Workspace <b>/</b> Toronto parking tickets</span><span class="avatar">PT</span>
+      </header>
+      <!-- Import opens the hidden file picker. Run validation checks the loaded data. -->
+      <section class="heading">
+        <div>
+          <div class="eyebrow">GIS AUTOMATION / DATA QUALITY</div>
+          <h1 id="title">A clearer view of your data.</h1>
+          <p>Prepare, validate and standardize Toronto parking-ticket records.</p>
+        </div>
+        <button id="import" class="secondary">↥ &nbsp; Import CSV</button
+        ><input id="file" type="file" accept=".csv" hidden /><button id="run" class="primary">
+          ▶ &nbsp; Run validation
+        </button>
+      </section>
+      <div class="notice">
+        <span>◈</span>
+        <div>
+          <strong id="dataset">Toronto parking tickets · Demonstration dataset</strong
+          ><small id="source"
+            >15,800 synthetic records · Browser validation · No geodatabase connected</small
+          >
+        </div>
+        <span class="pill">LOCAL DATA</span>
+      </div>
+      <!-- The script fills the dashboard containers after each run. -->
+      <div id="overview">
+        <div class="stats" id="stats"></div>
+        <div class="grid">
+          <section class="panel quality">
+            <div class="panelhead">
+              <h2>Data quality snapshot</h2>
+              <span id="runstamp">Ready to validate</span>
+            </div>
+            <div class="qualitybody">
+              <div class="ring" id="ring">
+                <div><strong id="score">—</strong><small>PASS RATE</small></div>
+              </div>
+              <div class="legend">
+                <h3>Confidence starts with clean data.</h3>
+                <p>Every record is checked against your active rules.</p>
+                <div><i class="dot"></i> Valid records <b id="valid">—</b></div>
+                <div><i class="dot amber"></i> Needs review <b id="invalid">—</b></div>
+              </div>
+            </div>
+            <div class="panelbottom">
+              ✓ &nbsp; Unique audit identifiers assigned during validation
+            </div>
+          </section>
+          <section class="panel">
+            <div class="panelhead">
+              <h2>Validation breakdown</h2>
+              <span>5 CHECKS</span>
+            </div>
+            <div id="breakdown"></div>
+          </section>
+        </div>
+        <section class="panel workflow">
+          <div class="panelhead">
+            <h2>From raw records to analysis-ready data</h2>
+            <span>PROCESSING WORKFLOW</span>
+          </div>
+          <div class="steps">
+            <div>
+              <em>01</em>
+              <h3>Inspect</h3>
+              <p>Review fields and source records</p>
+            </div>
+            <div>
+              <em>02</em>
+              <h3>Validate</h3>
+              <p>Check completeness and consistency</p>
+            </div>
+            <div>
+              <em>03</em>
+              <h3>Standardize</h3>
+              <p>Normalize dates and assign audit IDs</p>
+            </div>
+            <div>
+              <em>04</em>
+              <h3>Export</h3>
+              <p>Download clean data and issue logs</p>
+            </div>
+          </div>
+        </section>
+      </div>
+      <!-- The script writes filtered records into the table body. -->
+      <section id="records" class="panel">
+        <div class="panelhead">
+          <div>
+            <h2>Record explorer</h2>
+            <small id="recordcount"></small>
+          </div>
+          <div class="controls">
+            <input
+              id="search"
+              placeholder="Search tickets or locations…"
+              aria-label="Search records"
+            /><select id="filter" aria-label="Record status">
+              <option value="all">All records</option>
+              <option value="review">Needs review</option>
+              <option value="valid">Valid records</option></select
+            ><button id="export" class="secondary">↓ Export</button>
+          </div>
+        </div>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>AUDIT ID</th>
+                <th>TICKET NUMBER</th>
+                <th>ISSUE DATE</th>
+                <th>TIME</th>
+                <th>LOCATION</th>
+                <th>FINE</th>
+                <th>STATUS / ISSUES</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span id="pagination"></span>
+          <div><button id="prev">← Previous</button><button id="next">Next →</button></div>
+        </div>
+      </section>
+      <!-- These views stay hidden until their navigation button is selected. -->
+      <section id="rules" class="panel hidden">
+        <div class="panelhead">
+          <h2>Validation rules</h2>
+          <span>Applied on the next run</span>
+        </div>
+        <div id="rulelist"></div>
+        <div class="panelbottom">
+          CSV fields: ticket_number, date_of_infraction (YYYY-MM-DD or YYYYMMDD),
+          time_of_infraction (HHMM or HH:MM), location, set_fine_amount. Exports include
+          audit_id, validation_status, validation_issues and processed_at.
+        </div>
+      </section>
+      <section id="runs" class="panel hidden">
+        <div class="panelhead">
+          <h2>Processing log</h2>
+          <button id="logexport" class="secondary">↓ Export issue log</button>
+        </div>
+        <div id="log" class="log">
+          No runs yet. Run validation to create a processing audit.
+        </div>
+      </section>
+      <footer>
+        <span>PARKING TICKET AUDIT</span
+        ><span>ArcPy GIS Automation & Data Processing</span>
+      </footer>
+      <div id="toast" role="status"></div>
+    </main>
+    <!-- Load the script last so the controls already exist when it starts. -->
+    <script src="app.js"></script>
+  </body>
+</html>

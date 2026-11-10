@@ -1,0 +1,19 @@
+# Share only the reviewed source and documentation.
+# Add explicit exceptions here when a new file is ready to publish.
+/*
+!/.gitignore
+!/README.md
+!/app/
+/app/*
+!/app/app.js
+!/app/arcpy_audit.py
+!/app/csv_audit.py
+!/app/index.html
+!/app/style.css
+
+!/docs/
+/docs/*
+!/docs/screenshots/
+/docs/screenshots/*
+!/docs/screenshots/validation-dashboard.jpg
+!/docs/screenshots/record-explorer.jpg
